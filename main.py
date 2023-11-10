@@ -45,6 +45,15 @@ def add_birthday(*args):
 
 
 @user_error
+def add_address(*args):
+    addr_str = ""
+    # join args with " " starting from 1
+    addr_str = " ".join(args[1:])
+    print(addr_str)
+    return get_record_or_error(args[0], book).add_address((addr_str))
+
+
+@user_error
 def add_contact(*args):
     if get_record_or_error(args[0], book):
         return f"{RED}contact {Name(args[0])} already exist{RESET}\n\t{get_record_or_error(args[0], book)}\n\tUse 'add_phone' or 'change' command to add or change the phone"
@@ -89,6 +98,14 @@ def change_phone(*args):
 @user_error
 def del_phone(*args):
     return get_record_or_error(args[0], book).remove_phone(Phone(args[1]))
+
+@user_error
+def change_address(*args):
+    return get_record_or_error(args[0], book).edit_address(args[1])
+
+@user_error
+def del_address(*args):
+    return get_record_or_error(args[0], book).remove_address()
 
 
 @user_error
@@ -149,10 +166,10 @@ def add(*args):
         f'\t{YELLOW}add_bd {CYAN}<name> <birthday>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
     )
     help_list.append(
-        f'\t{YELLOW}add_email {CYAN}<name> <email>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
+        f'\t{YELLOW}add_email {CYAN}<name> <email>                 {RESET} - add the e-mail for an existing contact'
     )
     help_list.append(
-        f'\t{YELLOW}add_address {CYAN}<name> <address>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
+        f'\t{YELLOW}add_address {CYAN}<name> <address>                 {RESET} - add the address for an existing contact'
     )
     help_list.append(
         f'\t{YELLOW}add_note {CYAN}<name> <note>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
@@ -173,10 +190,10 @@ def change(*args):
         f"\t{YELLOW}change_bd {CYAN}<name> <new_birthday>          {RESET} - change the phone number for an existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}change_email {CYAN}<name> <email>          {RESET} - change the phone number for an existing contact"
+        f"\t{YELLOW}change_email {CYAN}<name> <email>          {RESET} - change the email for an existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}change_address {CYAN}<name> <address>          {RESET} - change the phone number for an existing contact"
+        f"\t{YELLOW}change_address {CYAN}<name> <address>          {RESET} - change the address for an existing contact"
     )
     help_list.append(
         f"\t{YELLOW}change_note {CYAN}<name> <note>          {RESET} - change the phone number for an existing contact"
@@ -193,10 +210,10 @@ def delete(*args):
         f"\t{YELLOW}delete_contact {CYAN}<name>             {RESET} - remove an existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}delete_email {CYAN}<name> <email>            {RESET} - remove an existing contact"
+        f"\t{YELLOW}delete_email {CYAN}<name> <email>            {RESET} - remove an email from existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}delete_address {CYAN}<name> <address>            {RESET} - remove an existing contact"
+        f"\t{YELLOW}delete_address {CYAN}<name>            {RESET} - remove an address from listexisting contact"
     )
     help_list.append(
         f"\t{YELLOW}delete_note {CYAN}<name> <phone>            {RESET} - remove an existing contact"
@@ -280,16 +297,20 @@ COMMANDS = {
     add_contact: ("add_record", "add_contact"),
     add_phones: ("add_phone", "phone_add"),
     add_birthday: ("add_birthday", "add_bd", "change_birthday", "change_bd"),
+    add_address: ("add_address", "add_adr", "change_address", "change_adr"),
     # add_note:
     
     change: ("change", "edit"),
     change_name: ("change_name", "name_change"),
     change_phone: ("change_phone", "phone_change", "edit_phone"),
+    change_address: ("change_address", "change_adr", "edit_address", "edit_adr"),
     # change_note:
     
     delete: ("delete", "del"),
     del_phone: ("del_phone", "delete_phone"),
     delete_record: ("delete_record", "delete", "del"),
+    del_address: ("delete_address", "delete_adr", "del_adr"),
+
     # delete_note:
     
     name_find: ("name", "find_name"),

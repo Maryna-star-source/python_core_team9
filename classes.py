@@ -77,19 +77,31 @@ class BirthDay(Field):
 
     def __str__(self) -> str:
         return str(self.value)
+    
+class Address(Field):
+    def __init__(self, value: str) -> None:
+        super().__init__(str(value).title())
+
+    def __str__(self) -> str:
+        return f"Address: {self.value}" if self.value else ""
 
 
 class Record:
     def __init__(
-        self, name: Name, phone: Phone | None = None, birthday: BirthDay | None = None
+        self, name: Name, phone: Phone | None = None, birthday: BirthDay | None = None, address: Address | None = None 
     ) -> None:
         self.name = Name(name)
         self.phones = [Phone(phone)] if phone else []
         self.birthday = BirthDay(birthday) if birthday else None
+        self.address = Address(address) if address else None
 
     def add_birthday(self, birthday: BirthDay):
         self.birthday = BirthDay(birthday)
         return f"the date of birth for contact {self.name} is set to {self.datetime_to_str(self.birthday)} \n\t{self}"
+    
+    def add_address(self, address: Address):
+        self.address = Address(address)
+        return f"the address for contact {self.name} is set to {self.address} \n\t{self}"
 
     def add_phone(self, phone: Phone) -> str:
         phone = Phone(phone)
@@ -147,6 +159,10 @@ class Record:
             return f"{RED}phone number {phone} is not among the contact numbers of {self.name} {RESET}\n\t{self}"
         self.phones.remove(phone)
         return f"phone number {phone} has been removed from {self.name}'s contact list \n\t{self}"
+    
+    def remove_address(self):
+        self.address = None
+        return f"address of {self.name} has been removed \n\t{self}"
 
     def seek_phone(self, phone: Phone):
         for p in self.phones:
@@ -158,15 +174,16 @@ class Record:
 
     def __str__(self) -> str:
         blanks = " " * (LEN_OF_NAME_FIELD - len(str(self.name)))
-        if self.birthday:
+        address_str = self.address if self.address else ""
+        if self.birthday and self.address:
             if int(self.days_to_birthday(self.birthday)[0]) == 0:
-                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {MAGENTA} birthday: {RESET} {self.datetime_to_str(self.birthday)} {MAGENTA}(today is {self.days_to_birthday(self.birthday)[1]}th birthday){RESET}"
+                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {MAGENTA} birthday: {RESET} {self.datetime_to_str(self.birthday)} {MAGENTA}(today is {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
             elif self.days_to_birthday(self.birthday)[0] <= 7:
-                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {CYAN} birthday: {RESET} {self.datetime_to_str(self.birthday)} {CYAN}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET}"
+                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {GRAY} birthday: {RESET} {self.datetime_to_str(self.birthday)} {GRAY}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
             else:
-                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {GRAY} birthday: {RESET} {self.datetime_to_str(self.birthday)} {GRAY}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET}"
+                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {GRAY} birthday: {RESET} {self.datetime_to_str(self.birthday)} {GRAY}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
         else:
-            return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)}"
+            return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {address_str}"
 
     def __repr__(self) -> str:
         return str(self)
