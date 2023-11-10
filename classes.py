@@ -3,11 +3,14 @@ from constants import RED, GRAY, CYAN, MAGENTA, RESET, LEN_OF_NAME_FIELD
 from datetime import datetime
 import os.path
 import pickle
+import re
 
 
 class PhoneError(Exception):
     ...
 
+class EmailError(Exception):
+    ...
 
 class BDayError(Exception):
     ...
@@ -57,6 +60,33 @@ class Phone(Field):
             raise PhoneError(f"{RED}{phone} - incorrect phone number{RESET}")
         self.__value = new_phone
 
+class Email(Field):
+    def __eq__(self, __value: object) -> bool:
+        return self.value == __value.value
+    
+    def find_all_emails(text):
+        result = re.findall(r"[A-z.]+\w+@[A-z]+\.[A-z]{2,}", text)
+        return result
+
+    @property
+    def value(self):
+        return self.__value
+    
+    @value.setter
+    def value(self, email: str):
+        new_email = str(email).strip()
+        # extend vemail check
+        #if "@" in new_email and "." in new_email:
+        if re.findall(r"[A-z.]+\w+@[A-z]+\.[A-z]{2,}", new_email):
+            self.__value = new_email
+        else:
+            raise EmailError(f"{RED}{new_email} - invalid email, the email must contains only letters, digits, @ and .{RESET}")
+        #self.__value = new_email
+
+    def __str__(self) -> str:
+        return f"{self.value}" if self.value else ""
+
+
 
 class BirthDay(Field):
     @property
@@ -88,10 +118,11 @@ class Address(Field):
 
 class Record:
     def __init__(
-        self, name: Name, phone: Phone | None = None, birthday: BirthDay | None = None, address: Address | None = None 
+        self, name: Name, phone: Phone | None = None, birthday: BirthDay | None = None, email: Email | None = None, address: Address | None = None 
     ) -> None:
         self.name = Name(name)
         self.phones = [Phone(phone)] if phone else []
+        self.emails = [Email(email)] if email else []
         self.birthday = BirthDay(birthday) if birthday else None
         self.address = Address(address) if address else None
 
@@ -109,6 +140,13 @@ class Record:
             return f"{RED}number {phone} is already present in {self.name}'s contact list {RESET} \n\t{self}"
         self.phones.append(phone)
         return f"phone number {phone} has been added to {self.name}'s contact list  \n\t{self}"
+    
+    def add_email(self, email: Email) -> str:
+        email = Email(email)
+        if email in self.emails:
+            return f"{RED}email {email} is already present in {self.name}'s contact list {RESET} \n\t{self}"
+        self.emails.append(email)
+        return f"email {email} has been added to {self.name}'s contact list  \n\t{self}"
 
     def datetime_to_str(self, date):
         date_to_str = str(date)
@@ -145,6 +183,17 @@ class Record:
             self.phones[self.phones.index(old_phone)] = new_phone
             return f"phone number {old_phone} has been successfully changed to {new_phone} for contact {self.name} \n\t{self}"
         return f"{RED}phone number {old_phone} is not among the contact numbers of {self.name}{RESET} \n\t{self}"
+    
+    def edit_email(self, old_email: Email, new_email: Email) -> str:
+        old_email = Email(old_email)
+        new_email = Email(new_email)
+        if old_email == new_email:
+            return f"{RED}you are trying to replace the email {old_email} with the same one {new_email}{RESET} \n\t{self}"
+        if old_email in self.emails:
+            self.emails[self.emails.index(old_email)] = new_email
+            return f"email {old_email} has been successfully changed to {new_email} for contact {self.name} \n\t{self}"
+        return f"{RED}email {old_email} is not among the contact numbers of {self.name}{RESET} \n\t{self}"
+
 
     def find_phone(self, phone: Phone):
         phone = Phone(phone)
@@ -152,6 +201,13 @@ class Record:
             if ph == phone:
                 return f"phone number {phone} found among {self.name}'s contact numbers"
         return f"{RED}phone number {phone} not found {RESET}"
+    
+    def find_email(self, email: Email):
+        email = Email(email)
+        for em in self.emails:
+            if em == email:
+                return f"email {email} found among {self.name}'s contact numbers"
+        return f"{RED}email {email} not found {RESET}"
 
     def remove_phone(self, phone: Phone):
         phone = Phone(phone)
@@ -159,6 +215,13 @@ class Record:
             return f"{RED}phone number {phone} is not among the contact numbers of {self.name} {RESET}\n\t{self}"
         self.phones.remove(phone)
         return f"phone number {phone} has been removed from {self.name}'s contact list \n\t{self}"
+    
+    def remove_email(self, email: Email):
+        email = Email(email)
+        if email not in self.emails:
+            return f"{RED}email {email} is not among the contact numbers of {self.name} {RESET}\n\t{self}"
+        self.emails.remove(email)
+        return f"email {email} has been removed from {self.name}'s contact list \n\t{self}"
     
     def remove_address(self):
         self.address = None
@@ -171,19 +234,28 @@ class Record:
                 return True
             else:
                 return False
+            
+    def seek_email(self, email: Email):
+        for e in self.emails:
+            em = e.value[:]
+            if str(email) in str(em):
+                return True
+            else:
+                return False
 
     def __str__(self) -> str:
         blanks = " " * (LEN_OF_NAME_FIELD - len(str(self.name)))
+        emails_str = ", ".join(str(e) for e in self.emails)
         address_str = self.address if self.address else ""
-        if self.birthday and self.address:
+        if self.birthday:
             if int(self.days_to_birthday(self.birthday)[0]) == 0:
-                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {MAGENTA} birthday: {RESET} {self.datetime_to_str(self.birthday)} {MAGENTA}(today is {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
+                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {emails_str} {MAGENTA} birthday: {RESET} {self.datetime_to_str(self.birthday)} {MAGENTA}(today is {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
             elif self.days_to_birthday(self.birthday)[0] <= 7:
-                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {GRAY} birthday: {RESET} {self.datetime_to_str(self.birthday)} {GRAY}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
+                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {emails_str} {GRAY} birthday: {RESET} {self.datetime_to_str(self.birthday)} {GRAY}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
             else:
-                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {GRAY} birthday: {RESET} {self.datetime_to_str(self.birthday)} {GRAY}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
+                return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {emails_str} {GRAY} birthday: {RESET} {self.datetime_to_str(self.birthday)} {GRAY}({self.days_to_birthday(self.birthday)[0]} days until the {self.days_to_birthday(self.birthday)[1]}th birthday){RESET} {address_str}"
         else:
-            return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {address_str}"
+            return f"{self.name} {blanks}: {', '.join(str(p) for p in self.phones)} {emails_str} {address_str}"
 
     def __repr__(self) -> str:
         return str(self)
