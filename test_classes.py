@@ -131,5 +131,15 @@ if __name__ == "__main__":
     print(rec.remove_address())
     print(rec.add_address("10001, New York, Manhattan 123b"))
     print(GREEN + "     перелік контактів" + RESET)
-    print(book.__str__())
+    print(book)
+
+    print("======== Email fields ========")
+    print(GREEN + "     додаємо email" + RESET)
+    #print(rec.add_email("XXXXXXXXXXXXXX"))
+    print(rec.add_email("asd@mail.com"))
+    print(rec.remove_email("asdddd@mail.com"))
+    print(rec.edit_email("asd@mail.com", "new_mail@mail.com"))
+    print(rec.add_email("second@mail.com"))
+    print(GREEN + "     перелік контактів" + RESET)
+    print(book)
 
