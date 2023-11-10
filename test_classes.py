@@ -124,3 +124,12 @@ if __name__ == "__main__":
 
     print(GREEN + "     перелік контактів" + RESET)
     print(book)
+
+    print("======== Address fields ========")
+    print(GREEN + "     додаємо адресу" + RESET)
+    print(rec.add_address("Lviv"))
+    print(rec.remove_address())
+    print(rec.add_address("10001, New York, Manhattan 123b"))
+    print(GREEN + "     перелік контактів" + RESET)
+    print(book.__str__())
+
