@@ -39,6 +39,79 @@ def get_record_or_error(name, book, return_error=False):
     return rec
 
 
+def add(*args):
+    help_list = []
+    help_list.append(
+        f"{YELLOW}add_contact {CYAN}<name> <phone>{GRAY}*n {CYAN}<birthday>  {RESET} - add a new contact with a phone number(s) and birthday(optional)"
+    )
+    help_list.append(
+        f"{GRAY}                                                (you can enter several phone numbers for a contact){RESET}"
+    )
+    help_list.append(
+        f"{YELLOW}add_phone {CYAN}<name> <new_phone>{GRAY}*n           {RESET} - add the new phone number for an existing contact"
+    )
+    help_list.append(
+        f"{GRAY}                                                (you can enter several phone numbers for a contact){RESET}"
+    )
+    help_list.append(
+        f'{YELLOW}add_bd {CYAN}<name> <birthday>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
+    )
+    help_list.append(
+        f'{YELLOW}add_email {CYAN}<name> <email>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
+    )
+    help_list.append(
+        f'{YELLOW}add_address {CYAN}<name> <address>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
+    )
+    help_list.append(
+        f'{YELLOW}add_note {CYAN}<name> <note>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
+    )
+
+    return "\n".join(help_list)
+
+
+def change(*args):
+    help_list = []
+    help_list.append(
+        f"{YELLOW}change_name {CYAN}<name> <new_name>            {RESET} - change the name for an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}change_phone {CYAN}<name> <phone> <new_phone>  {RESET} - change the phone number for an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}change_bd {CYAN}<name> <new_birthday>          {RESET} - change the phone number for an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}change_email {CYAN}<name> <email>          {RESET} - change the phone number for an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}change_address {CYAN}<name> <address>          {RESET} - change the phone number for an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}change_note {CYAN}<name> <note>          {RESET} - change the phone number for an existing contact"
+    )
+    return "\n".join(help_list)
+
+
+def delete(*args):
+    help_list = [TITLE]
+    help_list.append(
+        f"{YELLOW}delete_phone {CYAN}<name> <phone>              {RESET} - delete one phone number from an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}delete_contact {CYAN}<name>             {RESET} - remove an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}delete_email {CYAN}<name> <email>            {RESET} - remove an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}delete_address {CYAN}<name> <address>            {RESET} - remove an existing contact"
+    )
+    help_list.append(
+        f"{YELLOW}delete_note {CYAN}<name> <phone>            {RESET} - remove an existing contact"
+    )
+    return "\n".join(help_list)
+
+
 @user_error
 def add_birthday(*args):
     return get_record_or_error(args[0], book).add_birthday((args[1]))
@@ -134,7 +207,7 @@ def show_all(*args):
 def help_page(*args):
     help_list = [TITLE]
     help_list.append(
-        f"{YELLOW}add {CYAN}<name> <phone>{GRAY}*n {CYAN}<birthday>          {RESET} - add a new contact with a phone number(s) and birthday(optional)"
+        f"{YELLOW}add_contact {CYAN}<name> <phone>{GRAY}*n {CYAN}<birthday>  {RESET} - add a new contact with a phone number(s) and birthday(optional)"
     )
     help_list.append(
         f"{GRAY}                                                (you can enter several phone numbers for a contact){RESET}"
@@ -161,7 +234,7 @@ def help_page(*args):
         f"{YELLOW}delete_phone {CYAN}<name> <phone>              {RESET} - delete one phone number from an existing contact"
     )
     help_list.append(
-        f"{YELLOW}delete_contact {CYAN}<name> <phone>            {RESET} - remove an existing contact"
+        f"{YELLOW}delete_contact {CYAN}<name>                    {RESET} - remove an existing contact"
     )
     help_list.append(
         f"{YELLOW}find {CYAN}<anything>                          {RESET} - search for any string (>= 3 characters) in the contact data"
@@ -203,13 +276,16 @@ def unknown(*args):
 
 
 COMMANDS = {
-    add_contact: ("add_record", "add", "add_contact", "+"),
+    add: ("add", "+"),
+    add_contact: ("add_record", "add_contact"),
     add_phones: ("add_phone", "phone_add"),
+    add_birthday: ("add_birthday", "add_bd", "change_birthday", "change_bd"),
+    change: ("change", "edit"),
+    change_name: ("change_name", "name_change"),
     change_phone: ("change_phone", "phone_change", "edit_phone"),
+    delete: ("delete", "del"),
     del_phone: ("del_phone", "delete_phone"),
     delete_record: ("delete_record", "delete", "del"),
-    add_birthday: ("add_birthday", "add_bd", "change_birthday", "change_bd"),
-    change_name: ("change_name", "name_change"),
     name_find: ("name", "find_name"),
     search: ("search", "seek", "find"),
     help_page: ("help",),
