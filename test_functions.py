@@ -151,8 +151,8 @@ if __name__ == "__main__":
     )
     print(add_phones("Jill_e", "0677977155"))
     
-    # print(GREEN + "\n     додаємо день народження контакту, що НЕ існує" + RESET)
-    # print(add_birthday("Jill_e", "28-03-1968"))
+    print(GREEN + "\n     додаємо день народження контакту, що НЕ існує" + RESET)
+    print(add_birthday("Jill_e", "28-03-1968"))
 
 
     print(GREEN + "\n     друкуємо список контактів по 10 рядків на сторінку" + RESET)
