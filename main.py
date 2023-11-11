@@ -9,6 +9,7 @@ from classes import (
     PhoneError,
     BDayError,
     EmailError,
+    NoContactError,
 )
 from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET
 
@@ -34,6 +35,8 @@ def user_error(func):
             return f"{RED} {ee}{RESET}"
         except AttributeError:
             return f"{RED}phone number {args[1]} is not among the contact numbers of {args[0]} {RESET}"
+        except NoContactError:
+            return f"{RED}contact {args[0]} is not exist in contacts list {RESET}"
         except TypeError as ve:
             return f"{RED} {ve}{RESET}"
 
@@ -102,7 +105,10 @@ def add_few_phones(rec, *args):
 @user_error
 def add_phones(*args):
     rec = get_record_or_error(args[0], book)
-    return add_few_phones(rec, *args[1:]) + f"\t{rec}"
+    if rec:
+        return add_few_phones(rec, *args[1:]) + f"\t{rec}"
+    else:
+        return f"{RED}contact {WHITE}{args[0]}{RED} not found in address book{RESET}"
 
 
 @user_error
@@ -327,7 +333,7 @@ def unknown(*args):
 COMMANDS = {
     add: ("add", "+"),
     add_contact: ("add_record", "add_contact"),
-    add_phones: ("add_phone", "phone_add"),
+    add_phones: ("add_phone", "phone_add", "add_phones"),
     add_birthday: ("add_birthday", "add_bd", "change_birthday", "change_bd"),
     add_address: ("add_address", "add_adr", "change_address", "change_adr"),
     add_email: ("add_email", "email_add"),

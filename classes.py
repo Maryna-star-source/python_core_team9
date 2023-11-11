@@ -15,6 +15,9 @@ class EmailError(Exception):
 class BDayError(Exception):
     ...
 
+class NoContactError(Exception):
+    ...
+
 
 class Field:
     def __init__(self, value) -> None:
