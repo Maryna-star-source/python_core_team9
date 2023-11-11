@@ -32,6 +32,13 @@ class Note:
 class NotesBook(UserDict):
     def __init__(self):
         self.notes = {} 
+        
+    def add_tags(self, title, tags): # метод для додавання тегів
+        if title in self.notes:
+            self.notes[title].tags.extend(tags)
+            return f"Tags {', '.join(tags)} added to the note with title '{title}'."
+        else:
+            raise NoteError(f"Note with title '{title}' not found.")
 
                                     
     def search_notes(self, keyword): 
