@@ -1,19 +1,6 @@
-from classes import (
-    Name,
-    Phone,
-    Email,
-    Address,
-    Record,
-    AddressBook,
-    BirthDay,
-    PhoneError,
-    BDayError,
-    EmailError,
-    NoContactError,
-)
-from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET
+from classes import Name, Phone, Email, Address, Record, AddressBook, BirthDay, PhoneError, BDayError, EmailError
+from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, MAGENTA, RESET
 
-from sort_path import sorting
 
 book = AddressBook()
 
@@ -36,8 +23,6 @@ def user_error(func):
             return f"{RED} {ee}{RESET}"
         except AttributeError:
             return f"{RED}phone number {args[1]} is not among the contact numbers of {args[0]} {RESET}"
-        except NoContactError:
-            return f"{RED}contact {args[0]} is not exist in contacts list {RESET}"
         except TypeError as ve:
             return f"{RED} {ve}{RESET}"
 
@@ -60,10 +45,7 @@ def get_record_or_error(name, book, return_error=False):
 
 @user_error
 def add_birthday(*args):
-    if get_record_or_error(args[0], book):
-        return get_record_or_error(args[0], book).add_birthday((args[1]))
-    else:
-        return f"{RED}contact {WHITE}{args[0]}{RED} not found in address book{RESET}"
+    return get_record_or_error(args[0], book).add_birthday((args[1]))
 
 
 @user_error
@@ -78,7 +60,6 @@ def add_address(*args):
 @user_error
 def add_email(*args):
     return get_record_or_error(args[0], book).add_email(args[1])
-
 
 @user_error
 def add_contact(*args):
@@ -109,10 +90,7 @@ def add_few_phones(rec, *args):
 @user_error
 def add_phones(*args):
     rec = get_record_or_error(args[0], book)
-    if rec:
-        return add_few_phones(rec, *args[1:]) + f"\t{rec}"
-    else:
-        return f"{RED}contact {WHITE}{args[0]}{RED} not found in address book{RESET}"
+    return add_few_phones(rec, *args[1:]) + f"\t{rec}"
 
 
 @user_error
@@ -124,7 +102,6 @@ def change_name(*args):
 def change_phone(*args):
     return get_record_or_error(args[0], book).edit_phone(Phone(args[1]), Phone(args[2]))
 
-
 @user_error
 def change_email(*args):
     return get_record_or_error(args[0], book).edit_email(Email(args[1]), Email(args[2]))
@@ -134,16 +111,13 @@ def change_email(*args):
 def del_phone(*args):
     return get_record_or_error(args[0], book).remove_phone(Phone(args[1]))
 
-
 @user_error
 def del_email(*args):
     return get_record_or_error(args[0], book).remove_email(Email(args[1]))
 
-
 @user_error
 def change_address(*args):
     return get_record_or_error(args[0], book).edit_address(args[1])
-
 
 @user_error
 def del_address(*args):
@@ -165,12 +139,24 @@ def search(*args):
     if not args:
         return f"{RED}searching string is required{RESET}"
     seek = args[0].lower()
-    for name, record in book.data.items():
+    for record in book.data.values():
         if seek.isdigit():
             if record.seek_phone(seek):
-                result += "\t" + str(record) + "\n"
-        if seek in name.lower():
-            result += "\t" + str(record) + "\n"
+                result += f"\t{BLUE}[   Phone match] {RESET}{record}\n"
+            if record.birthday:
+                    date_str = record.birthday.value.strftime('%d-%m-%Y')
+                    if date_str.find(seek) != -1:
+                        result += f"\t{MAGENTA}[Birthday match] {RESET}{record}\n"
+        
+        if seek in record.name.value.lower():
+            result += f"\t{CYAN}[ Name match] {RESET}{record}\n"
+        if record.seek_email(seek):
+            result += f"\t{BLUE}[Email match] {RESET}{record}\n"
+        if record.address:
+            addr_str = record.address.value.lower()
+            if addr_str.find(seek) != -1:
+                result += f"\t{GRAY}[ Address match] {RESET}{record}\n"
+        
     if result:
         return f"data found for your request '{seek}': \n{result[:-1]}"
     else:
@@ -208,10 +194,10 @@ def add(*args):
         f'\t{YELLOW}add_bd {CYAN}<name> <birthday>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
     )
     help_list.append(
-        f"\t{YELLOW}add_email {CYAN}<name> <email>                 {RESET} - add the e-mail for an existing contact"
+        f'\t{YELLOW}add_email {CYAN}<name> <email>                 {RESET} - add the e-mail for an existing contact'
     )
     help_list.append(
-        f"\t{YELLOW}add_address {CYAN}<name> <address>             {RESET} - add the address for an existing contact"
+        f'\t{YELLOW}add_address {CYAN}<name> <address>             {RESET} - add the address for an existing contact'
     )
     help_list.append(
         f'\t{YELLOW}add_note {CYAN}<name> <note>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
@@ -249,7 +235,7 @@ def delete(*args):
         f"\t{YELLOW}delete_phone {CYAN}<name> <phone>              {RESET} - delete one phone number from an existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}delete_contact {CYAN}<name>                    {RESET} - remove an existing contact"
+        f"\t{YELLOW}delete_record {CYAN}<name>                    {RESET} - remove an existing contact"
     )
     help_list.append(
         f"\t{YELLOW}delete_email {CYAN}<name> <email>              {RESET} - remove an email from existing contact"
@@ -293,7 +279,7 @@ def help_page(*args):
         f"\t{YELLOW}delete_phone {CYAN}<name> <phone>              {RESET} - delete one phone number from an existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}delete_contact {CYAN}<name>                    {RESET} - remove an existing contact"
+        f"\t{YELLOW}delete_record {CYAN}<name>                    {RESET} - remove an existing contact"
     )
     help_list.append(
         f"\t{YELLOW}find {CYAN}<anything>                          {RESET} - search for any string (>= 3 characters) in the contact data"
@@ -303,9 +289,6 @@ def help_page(*args):
     )
     help_list.append(
         f"\t{YELLOW}list {GRAY}<pages>                             {RESET} - show all contacts, {GRAY}<pages>(optional) - lines per page{RESET}"
-    )
-    help_list.append(
-        f"\t{YELLOW}sorting_folder {CYAN}<folder>                  {RESET} - sorting folder"
     )
     help_list.append(
         f'\t{YELLOW}hello                                    {RESET} - "hello-string"'
@@ -340,30 +323,33 @@ def unknown(*args):
 COMMANDS = {
     add: ("add", "+"),
     add_contact: ("add_record", "add_contact"),
-    add_phones: ("add_phone", "phone_add", "add_phones"),
+    add_phones: ("add_phone", "phone_add"),
     add_birthday: ("add_birthday", "add_bd", "change_birthday", "change_bd"),
     add_address: ("add_address", "add_adr", "change_address", "change_adr"),
     add_email: ("add_email", "email_add"),
     # add_note:
+    
     change: ("change", "edit"),
     change_name: ("change_name", "name_change"),
     change_phone: ("change_phone", "phone_change", "edit_phone"),
     change_address: ("change_address", "change_adr", "edit_address", "edit_adr"),
     change_email: ("change_email", "email_change"),
     # change_note:
+    
     delete: ("delete", "del"),
     del_phone: ("del_phone", "delete_phone"),
-    delete_record: ("delete_contact", "delete_record", "del_contact"),
+    delete_record: ("delete_record", "delete", "del"),
     del_address: ("delete_address", "delete_adr", "del_adr"),
     del_email: ("delete_email", "del_email"),
+
     # delete_note:
+    
     name_find: ("name", "find_name"),
     search: ("search", "seek", "find"),
     help_page: ("help",),
     say_hello: ("hello", "hi"),
     show_all: ("show_all", "show", "list"),
     say_good_bay: ("exit", "good_bay", "by", "close", "end"),
-    sorting: ("sort", "sorting", "sorting_folder", "sort_path")
 }
 
 
@@ -393,7 +379,6 @@ def main():
             help_page,
             search,
             name_find,
-            sorting,
         ]:
             book.write_contacts_to_file(FILENAME)
 
