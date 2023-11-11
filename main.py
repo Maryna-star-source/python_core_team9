@@ -59,8 +59,10 @@ def get_record_or_error(name, book, return_error=False):
 
 @user_error
 def add_birthday(*args):
-    return get_record_or_error(args[0], book).add_birthday((args[1]))
-
+    if get_record_or_error(args[0], book):
+        return get_record_or_error(args[0], book).add_birthday((args[1]))
+    else:
+        return f"{RED}contact {WHITE}{args[0]}{RED} not found in address book{RESET}"
 
 @user_error
 def add_address(*args):
