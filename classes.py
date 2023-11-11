@@ -90,7 +90,6 @@ class Email(Field):
         return f"{self.value}" if self.value else ""
 
 
-
 class BirthDay(Field):
     @property
     def value(self):
