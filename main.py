@@ -13,6 +13,8 @@ from classes import (
 )
 from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET
 
+from notes import NotesBook
+
 from sort_path import sorting
 
 book = AddressBook()
@@ -344,7 +346,7 @@ COMMANDS = {
     add_birthday: ("add_birthday", "add_bd", "change_birthday", "change_bd"),
     add_address: ("add_address", "add_adr", "change_address", "change_adr"),
     add_email: ("add_email", "email_add"),
-    # add_note:
+    add_note: ("add_note")
     change: ("change", "edit"),
     change_name: ("change_name", "name_change"),
     change_phone: ("change_phone", "phone_change", "edit_phone"),
@@ -383,7 +385,7 @@ def main():
     book = book.read_contacts_from_file(FILENAME)
     print("\n" + BLUE + TITLE + RESET + "\t\tType 'help' for information")
     while True:
-        user_input = input(f"{YELLOW}>>>{RESET}").strip().lower()
+        user_input = input(f"{YELLOW}>{BLUE}>{YELLOW}>{RESET}").strip().lower()
         func, data = parser(user_input)
         print(func(*data))
         if func not in [
