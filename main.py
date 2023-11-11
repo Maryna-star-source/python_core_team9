@@ -1,4 +1,15 @@
-from classes import Name, Phone, Email, Address, Record, AddressBook, BirthDay, PhoneError, BDayError, EmailError
+from classes import (
+    Name,
+    Phone,
+    Email,
+    Address,
+    Record,
+    AddressBook,
+    BirthDay,
+    PhoneError,
+    BDayError,
+    EmailError,
+)
 from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET
 
 
@@ -61,6 +72,7 @@ def add_address(*args):
 def add_email(*args):
     return get_record_or_error(args[0], book).add_email(args[1])
 
+
 @user_error
 def add_contact(*args):
     if get_record_or_error(args[0], book):
@@ -102,6 +114,7 @@ def change_name(*args):
 def change_phone(*args):
     return get_record_or_error(args[0], book).edit_phone(Phone(args[1]), Phone(args[2]))
 
+
 @user_error
 def change_email(*args):
     return get_record_or_error(args[0], book).edit_email(Email(args[1]), Email(args[2]))
@@ -111,13 +124,16 @@ def change_email(*args):
 def del_phone(*args):
     return get_record_or_error(args[0], book).remove_phone(Phone(args[1]))
 
+
 @user_error
 def del_email(*args):
     return get_record_or_error(args[0], book).remove_email(Email(args[1]))
 
+
 @user_error
 def change_address(*args):
     return get_record_or_error(args[0], book).edit_address(args[1])
+
 
 @user_error
 def del_address(*args):
@@ -182,10 +198,10 @@ def add(*args):
         f'\t{YELLOW}add_bd {CYAN}<name> <birthday>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
     )
     help_list.append(
-        f'\t{YELLOW}add_email {CYAN}<name> <email>                 {RESET} - add the e-mail for an existing contact'
+        f"\t{YELLOW}add_email {CYAN}<name> <email>                 {RESET} - add the e-mail for an existing contact"
     )
     help_list.append(
-        f'\t{YELLOW}add_address {CYAN}<name> <address>             {RESET} - add the address for an existing contact'
+        f"\t{YELLOW}add_address {CYAN}<name> <address>             {RESET} - add the address for an existing contact"
     )
     help_list.append(
         f'\t{YELLOW}add_note {CYAN}<name> <note>                 {RESET} - add the birthday data ("dd-mm-yyyy") for an existing contact'
@@ -223,7 +239,7 @@ def delete(*args):
         f"\t{YELLOW}delete_phone {CYAN}<name> <phone>              {RESET} - delete one phone number from an existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}delete_record {CYAN}<name>                    {RESET} - remove an existing contact"
+        f"\t{YELLOW}delete_contact {CYAN}<name>                    {RESET} - remove an existing contact"
     )
     help_list.append(
         f"\t{YELLOW}delete_email {CYAN}<name> <email>              {RESET} - remove an email from existing contact"
@@ -267,7 +283,7 @@ def help_page(*args):
         f"\t{YELLOW}delete_phone {CYAN}<name> <phone>              {RESET} - delete one phone number from an existing contact"
     )
     help_list.append(
-        f"\t{YELLOW}delete_record {CYAN}<name>                    {RESET} - remove an existing contact"
+        f"\t{YELLOW}delete_contact {CYAN}<name>                    {RESET} - remove an existing contact"
     )
     help_list.append(
         f"\t{YELLOW}find {CYAN}<anything>                          {RESET} - search for any string (>= 3 characters) in the contact data"
@@ -316,22 +332,18 @@ COMMANDS = {
     add_address: ("add_address", "add_adr", "change_address", "change_adr"),
     add_email: ("add_email", "email_add"),
     # add_note:
-    
     change: ("change", "edit"),
     change_name: ("change_name", "name_change"),
     change_phone: ("change_phone", "phone_change", "edit_phone"),
     change_address: ("change_address", "change_adr", "edit_address", "edit_adr"),
     change_email: ("change_email", "email_change"),
     # change_note:
-    
     delete: ("delete", "del"),
     del_phone: ("del_phone", "delete_phone"),
-    delete_record: ("delete_record", "delete", "del"),
+    delete_record: ("delete_contact", "delete_record", "del_contact"),
     del_address: ("delete_address", "delete_adr", "del_adr"),
     del_email: ("delete_email", "del_email"),
-
     # delete_note:
-    
     name_find: ("name", "find_name"),
     search: ("search", "seek", "find"),
     help_page: ("help",),
