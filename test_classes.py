@@ -1,4 +1,5 @@
 from classes import Record, AddressBook
+from notes import Note, NotesBook
 from constants import GREEN, RESET
 
 # =============================================
