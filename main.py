@@ -13,6 +13,7 @@ from classes import (
 )
 from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET
 
+from sort_path import sorting
 
 book = AddressBook()
 
@@ -63,6 +64,7 @@ def add_birthday(*args):
         return get_record_or_error(args[0], book).add_birthday((args[1]))
     else:
         return f"{RED}contact {WHITE}{args[0]}{RED} not found in address book{RESET}"
+
 
 @user_error
 def add_address(*args):
@@ -303,6 +305,9 @@ def help_page(*args):
         f"\t{YELLOW}list {GRAY}<pages>                             {RESET} - show all contacts, {GRAY}<pages>(optional) - lines per page{RESET}"
     )
     help_list.append(
+        f"\t{YELLOW}sorting_folder {CYAN}<folder>                  {RESET} - sorting folder"
+    )
+    help_list.append(
         f'\t{YELLOW}hello                                    {RESET} - "hello-string"'
     )
     help_list.append(
@@ -358,6 +363,7 @@ COMMANDS = {
     say_hello: ("hello", "hi"),
     show_all: ("show_all", "show", "list"),
     say_good_bay: ("exit", "good_bay", "by", "close", "end"),
+    sorting: ("sort", "sorting", "sorting_folder", "sort_path")
 }
 
 
@@ -387,6 +393,7 @@ def main():
             help_page,
             search,
             name_find,
+            sorting,
         ]:
             book.write_contacts_to_file(FILENAME)
 
