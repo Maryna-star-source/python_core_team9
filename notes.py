@@ -56,12 +56,12 @@ class NotesBook(UserDict):
     def __init__(self):
         self.notes = {}
 
-    def search_notes_by_tag(self, tag, sort_by_keywords=False):
-        matching_notes = [
-            f"Title: {title}\nContent: {note['content']}\nTags: {', '.join(note['tags'])}"
-            for title, note in self.notes.items()
-            if tag.lower() in map(str.lower, note["tags"])
-        ]
+    # def search_notes_by_tag(self, tag, sort_by_keywords=False):
+    #     matching_notes = [
+    #         f"Title: {title}\nContent: {note['content']}\nTags: {', '.join(note['tags'])}"
+    #         for title, note in self.notes.items()
+    #         if tag.lower() in map(str.lower, note["tags"])
+    #     ]
 
     def add_tags(self, title, tags):  # метод для додавання тегів
         if title in self.notes:
