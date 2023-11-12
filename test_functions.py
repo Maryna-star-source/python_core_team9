@@ -13,6 +13,7 @@ from main import (
     show_all,
     delete_record,
 )
+from get_birthday_on_date import get_birthdays_on_date
 
 # =============================================
 #             test 2 (functions)
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 
     print(GREEN + "     додаємо контакт у якого 3 телефони та дата народження" + RESET)
     print(
-        add_contact("Bill_t", "0997078845", "099 745-12-35", "0964523265", "13-11-2002")
+        add_contact("Bill_t", "0997078845", "099 745-12-35", "0964523265", "12-11-2002")
     )
 
     print(GREEN + "\n     додаємо контакт у якого 4 телефони" + RESET)
@@ -159,3 +160,6 @@ if __name__ == "__main__":
     # print(show_all(10)
 
     print(show_all())
+
+    result = get_birthdays_on_date(book)
+    print(result)

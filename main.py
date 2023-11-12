@@ -13,6 +13,8 @@ from classes import (
 )
 from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET, MAGENTA
 
+from get_birthday_on_date import get_birthdays_on_date
+
 from notes import NotesBook
 
 from sort_path import sorting
@@ -300,6 +302,9 @@ def help_page(*args):
         f"\t{YELLOW}find {CYAN}<anything>                          {RESET} - search for any string (>= 3 characters) in the contact data"
     )
     help_list.append(
+        f"\t{YELLOW}birthdays {CYAN}<days>                          {RESET} - shows a list of contacts after a certain number of days"
+    )
+    help_list.append(
         f"\t{YELLOW}name {CYAN}<name>                              {RESET} - search record by the name"
     )
     help_list.append(
@@ -343,7 +348,7 @@ COMMANDS = {
     add_address: ("add_address", "add_adr", "change_address", "change_adr"),
     add_email: ("add_email", "email_add"),
 
-    add_note: ("add_note"),
+    # add_note: ("add_note"),
   
     change: ("change", "edit"),
     change_name: ("change_name", "name_change"),
@@ -361,6 +366,7 @@ COMMANDS = {
     # delete_note:
     
     name_find: ("name", "find_name"),
+    get_birthdays_on_date: ("birthdays", "find_birthdays"),
     search: ("search", "seek", "find"),
     help_page: ("help",),
     say_hello: ("hello", "hi"),
