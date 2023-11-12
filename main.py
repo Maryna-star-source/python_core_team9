@@ -11,7 +11,7 @@ from classes import (
     EmailError,
     NoContactError,
 )
-from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET
+from constants import TITLE, FILENAME, RED, BLUE, YELLOW, CYAN, GRAY, WHITE, RESET, MAGENTA
 
 from notes import NotesBook
 
@@ -343,7 +343,7 @@ COMMANDS = {
     add_address: ("add_address", "add_adr", "change_address", "change_adr"),
     add_email: ("add_email", "email_add"),
 
-    add_note: ("add_note")
+    add_note: ("add_note"),
   
     change: ("change", "edit"),
     change_name: ("change_name", "name_change"),
